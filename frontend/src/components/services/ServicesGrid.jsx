@@ -1,6 +1,8 @@
-import { services } from '../../data/services'
+import { services as staticServices } from '../../data/services'
 
-export default function ServicesGrid() {
+export default function ServicesGrid({ services }) {
+  const items = (services && services.length > 0) ? services : staticServices
+
   return (
     <nav
       aria-label="Services quick navigation"
@@ -8,14 +10,14 @@ export default function ServicesGrid() {
         background: 'var(--color-ivory)',
         borderBottom: '1px solid var(--color-ivory-muted)',
         position: 'sticky',
-        top: '72px',
+        top: '110px',
         zIndex: 100,
         padding: '0.75rem 0',
       }}
     >
       <div className="container">
         <div className="d-flex flex-wrap gap-2 justify-content-center">
-          {services.map(({ id, icon, title }) => (
+          {items.map(({ id, icon, title }) => (
             <a
               key={id}
               href={`#${id}`}
@@ -44,7 +46,7 @@ export default function ServicesGrid() {
             >
               <i className={`bi ${icon}`}></i>
               <span className="d-none d-md-inline">{title.split(' ').slice(0, 3).join(' ')}</span>
-              <span className="d-md-none">{title.split(' ')[title.split(' ').length - 1]}</span>
+              <span className="d-md-none">{title.split(' ').slice(-1)[0]}</span>
             </a>
           ))}
         </div>

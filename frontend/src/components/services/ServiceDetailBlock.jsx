@@ -1,7 +1,7 @@
 import Reveal from '../common/Reveal'
 import Button from '../common/Button'
 
-import imgHousing from '../../assets/images/service-housing.jpg'
+import imgHousing from '../../assets/images/apartments.jpg'
 import imgEnergy from '../../assets/images/service-energy.jpg'
 import imgPPP from '../../assets/images/service-ppp.jpg'
 import imgMicrofinance from '../../assets/images/service-microfinance.jpg'
@@ -13,8 +13,8 @@ const serviceImages = {
   'microfinance': imgMicrofinance,
 }
 
-export default function ServiceDetailBlock({ id, icon, title, overview, clientTypes, transactionScope, structuringThemes, reversed = false }) {
-  const serviceImage = serviceImages[id]
+export default function ServiceDetailBlock({ id, icon, title, overview, clientTypes, transactionScope, structuringThemes, imageUrl = '', reversed = false }) {
+  const serviceImage = imageUrl || serviceImages[id]
 
   const contentCol = (
     <div className={`col-lg-7 ${reversed ? 'order-lg-1' : ''}`}>

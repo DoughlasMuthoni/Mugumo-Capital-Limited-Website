@@ -1,16 +1,40 @@
 import { Helmet } from 'react-helmet-async'
+import { useEffect, useState } from 'react'
 import PageHero from '../components/layout/PageHero'
 import ServicesGrid from '../components/services/ServicesGrid'
 import ServiceDetailBlock from '../components/services/ServiceDetailBlock'
 import CTASection from '../components/common/CTASection'
-import { services } from '../data/services'
-import servicesHeroBg from '../assets/images/page-hero-services.jpg'
+import { services as staticServices } from '../data/services'
+import { getPublicServices } from '../services/api'
+import servicesHeroBg from '../assets/images/nairobi-city.jpeg'
 import { useLang } from '../context/LanguageContext'
+
+const mapService = (s) => ({
+  id:                s.slug,
+  icon:              s.icon,
+  title:             s.title,
+  overview:          s.overview || '',
+  clientTypes:       s.client_types       || [],
+  transactionScope:  s.transaction_scope  || [],
+  structuringThemes: s.structuring_themes || [],
+  imageUrl:          s.image_url          || '',
+})
 
 export default function Services() {
   const { t } = useLang()
   const p = t.pages.services
   const c = t.page_ctas.services
+
+  const [services, setServices] = useState(staticServices)
+
+  useEffect(() => {
+    getPublicServices()
+      .then(items => {
+        if (items.length > 0) setServices(items.map(mapService))
+      })
+      .catch(() => {})
+  }, [])
+
   return (
     <>
       <Helmet>
@@ -21,7 +45,7 @@ export default function Services() {
         <meta property="og:image" content="/og-image.jpg" />
       </Helmet>
       <PageHero title={p.title} subtitle={p.subtitle} backgroundImage={servicesHeroBg} />
-      <ServicesGrid />
+      <ServicesGrid services={services} />
       {services.map((service, i) => (
         <ServiceDetailBlock key={service.id} {...service} reversed={i % 2 !== 0} />
       ))}

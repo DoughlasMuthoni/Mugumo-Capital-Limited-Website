@@ -1,0 +1,17 @@
+Options -MultiViews -Indexes
+RewriteEngine On
+
+# Pass backend/public requests through (local development)
+RewriteCond %{REQUEST_URI} /backend/public
+RewriteRule ^ - [L]
+
+# Pass /api/* requests through (production)
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteRule ^ - [L]
+
+# Don't rewrite real files or directories
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Everything else → React SPA
+RewriteRule ^ index.html [L]

@@ -6,6 +6,7 @@ const NAV = [
   { path: '/admin',           label: 'Dashboard',  icon: 'bi-speedometer2',  exact: true },
   { path: '/admin/inquiries', label: 'Inquiries',  icon: 'bi-envelope-fill' },
   { path: '/admin/team',      label: 'Team',       icon: 'bi-people-fill' },
+  { path: '/admin/services',  label: 'Services',   icon: 'bi-grid-fill' },
   { path: '/admin/settings',  label: 'Settings',   icon: 'bi-gear-fill' },
 ]
 

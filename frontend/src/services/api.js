@@ -4,7 +4,7 @@ export async function getPublicTeam() {
   const res  = await fetch(`${BASE}/team`)
   const json = await res.json()
   if (!res.ok) throw new Error(json.message || 'Failed')
-  return json.data
+  return json.data?.items ?? []
 }
 
 export async function getPublicSettings() {
@@ -12,6 +12,13 @@ export async function getPublicSettings() {
   const json = await res.json()
   if (!res.ok) throw new Error(json.message || 'Failed')
   return json.data
+}
+
+export async function getPublicServices() {
+  const res  = await fetch(`${BASE}/services`)
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.message || 'Failed')
+  return json.data?.items ?? []
 }
 
 export async function submitContactForm(data) {

@@ -1,6 +1,6 @@
 import Reveal from '../common/Reveal'
 import SectionIntro from '../common/SectionIntro'
-import aboutImg from '../../assets/images/about-meeting.jpg'
+import aboutImg from '../../assets/images/apartments.jpg'
 
 export default function AboutStory() {
   return (

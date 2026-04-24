@@ -18,12 +18,15 @@ export default function AdminInquiries() {
   const [expanded, setExpanded] = useState(null)
   const [toDelete, setToDelete] = useState(null)
 
+  const [loadError, setLoadError] = useState('')
+
   const load = useCallback(() => {
     setLoading(true)
     setExpanded(null)
+    setLoadError('')
     adminApi.listInquiries({ type: tab, page, limit: 15, status, search })
       .then(d => { setItems(d.items || []); setTotal(d.total || 0); setPages(d.pages || 1) })
-      .catch(console.error)
+      .catch(err => setLoadError(err.message || 'Failed to load inquiries.'))
       .finally(() => setLoading(false))
   }, [tab, page, status, search])
 
@@ -50,6 +53,12 @@ export default function AdminInquiries() {
         <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0F2B3C', marginBottom: '4px' }}>Inquiries</h1>
         <p style={{ color: '#6B7280', fontSize: '0.875rem', margin: 0 }}>Manage all inbound inquiries from the website.</p>
       </div>
+
+      {loadError && (
+        <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#DC2626', padding: '12px 16px', borderRadius: '6px', fontSize: '0.875rem', marginBottom: '20px' }}>
+          <strong>API Error:</strong> {loadError}
+        </div>
+      )}
 
       {/* Tabs */}
       <div style={{ display: 'flex', gap: '4px', marginBottom: '20px', background: '#E5E7EB', borderRadius: '8px', padding: '4px', width: 'fit-content' }}>

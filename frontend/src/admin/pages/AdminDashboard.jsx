@@ -8,6 +8,7 @@ export default function AdminDashboard() {
   const [stats,   setStats]   = useState(null)
   const [recent,  setRecent]  = useState([])
   const [loading, setLoading] = useState(true)
+  const [error,   setError]   = useState('')
 
   useEffect(() => {
     Promise.all([
@@ -15,7 +16,7 @@ export default function AdminDashboard() {
       adminApi.listInquiries({ limit: 8, page: 1 }),
     ])
       .then(([s, i]) => { setStats(s); setRecent(i.items || []) })
-      .catch(console.error)
+      .catch(err => setError(err.message || 'Failed to load dashboard data.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -26,19 +27,21 @@ export default function AdminDashboard() {
         <p style={{ color: '#6B7280', fontSize: '0.875rem', margin: 0 }}>Overview of site activity and content.</p>
       </div>
 
+      {error && (
+        <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#DC2626', padding: '12px 16px', borderRadius: '6px', fontSize: '0.875rem', marginBottom: '20px' }}>
+          <strong>API Error:</strong> {error}
+        </div>
+      )}
+
       {loading ? (
         <p style={{ color: '#9CA3AF' }}>Loading…</p>
       ) : (
         <>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '20px', marginBottom: '32px' }}>
-            <StatCard icon="bi-envelope-fill"    label="Contact Submissions" value={stats?.total_contacts ?? 0} sub={`${stats?.new_contacts ?? 0} unread`}  color="#0F2B3C" />
-            <StatCard icon="bi-handshake-fill"   label="Partner Inquiries"   value={stats?.total_partners ?? 0} sub={`${stats?.new_partners ?? 0} unread`}  color="#E8751A" />
-            <StatCard icon="bi-people-fill"      label="Team Members"        value={stats?.active_team ?? 0}    sub="active profiles"                        color="#0F2B3C" />
-            <StatCard icon="bi-chat-dots-fill"   label="Total Inquiries"
-              value={(stats?.total_contacts ?? 0) + (stats?.total_partners ?? 0)}
-              sub="all types combined"
-              color="#E8751A"
-            />
+            <StatCard icon="bi-envelope-fill"    label="Contact Submissions" value={stats?.total_contacts ?? 0}  sub={`${stats?.new_contacts ?? 0} unread`} color="#0F2B3C" />
+            <StatCard icon="bi-handshake-fill"   label="Partner Inquiries"   value={stats?.total_partners ?? 0}  sub={`${stats?.new_partners ?? 0} unread`} color="#E8751A" />
+            <StatCard icon="bi-people-fill"      label="Team Members"        value={stats?.active_team ?? 0}     sub="active profiles"                      color="#0F2B3C" />
+            <StatCard icon="bi-grid-fill"        label="Active Services"     value={stats?.active_services ?? 0} sub="visible on site"                      color="#E8751A" />
           </div>
 
           <div style={{ background: '#fff', borderRadius: '8px', boxShadow: '0 1px 4px rgba(0,0,0,0.07)', overflow: 'hidden' }}>

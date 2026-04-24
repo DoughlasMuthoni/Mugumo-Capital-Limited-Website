@@ -1,13 +1,35 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Reveal from '../common/Reveal'
 import SectionIntro from '../common/SectionIntro'
 import { useLang } from '../../context/LanguageContext'
+import { getPublicServices } from '../../services/api'
 
-const icons = ['bi-house-heart-fill', 'bi-sun-fill', 'bi-buildings-fill', 'bi-cash-coin']
+function mapApiToCard(s, idx) {
+  return {
+    category: s.title.split(' ').slice(-2).join(' '),
+    title:    s.title,
+    body:     s.overview || '',
+    bullets:  (s.transaction_scope?.length ? s.transaction_scope : s.client_types || []).slice(0, 4),
+    icon:     s.icon || 'bi-briefcase',
+  }
+}
 
 export default function ServicesPreview() {
   const { t } = useLang()
   const s = t.services_preview
+
+  const [items, setItems] = useState(null)
+
+  useEffect(() => {
+    getPublicServices()
+      .then(rows => {
+        if (rows.length > 0) setItems(rows.map(mapApiToCard))
+      })
+      .catch(() => {})
+  }, [])
+
+  const cards = items ?? s.items
 
   return (
     <section className="section-py" style={{ backgroundColor: 'var(--color-white)' }}>
@@ -22,7 +44,7 @@ export default function ServicesPreview() {
         </Reveal>
 
         <div className="row g-4 mt-2">
-          {s.items.map(({ category, title, body, bullets }, idx) => (
+          {cards.map(({ category, title, body, bullets, icon }, idx) => (
             <div key={idx} className="col-lg-6">
               <Reveal delay={idx + 1}>
                 <div style={{
@@ -42,7 +64,7 @@ export default function ServicesPreview() {
                       background: 'var(--color-accent)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
-                      <i className={`bi ${icons[idx]}`} style={{ fontSize: '1.2rem', color: '#fff' }} />
+                      <i className={`bi ${icon}`} style={{ fontSize: '1.2rem', color: '#fff' }} />
                     </div>
                     <span style={{
                       fontFamily: 'var(--font-heading)',
@@ -73,35 +95,37 @@ export default function ServicesPreview() {
                     {body}
                   </p>
 
-                  <ul style={{
-                    listStyle: 'none',
-                    padding: 0,
-                    margin: 0,
-                    marginTop: '16px',
-                    paddingTop: '16px',
-                    borderTop: '1px solid rgba(15,43,60,0.1)',
-                  }}>
-                    {bullets.map((item, bi) => (
-                      <li key={bi} style={{
-                        fontSize: '0.865rem',
-                        color: 'var(--color-body)',
-                        padding: '6px 0 6px 20px',
-                        position: 'relative',
-                        lineHeight: 1.5,
-                      }}>
-                        <span style={{
-                          position: 'absolute',
-                          left: 0,
-                          top: '14px',
-                          width: '10px',
-                          height: '1px',
-                          background: 'var(--color-accent)',
-                          display: 'inline-block',
-                        }} aria-hidden="true" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                  {bullets?.length > 0 && (
+                    <ul style={{
+                      listStyle: 'none',
+                      padding: 0,
+                      margin: 0,
+                      marginTop: '16px',
+                      paddingTop: '16px',
+                      borderTop: '1px solid rgba(15,43,60,0.1)',
+                    }}>
+                      {bullets.map((item, bi) => (
+                        <li key={bi} style={{
+                          fontSize: '0.865rem',
+                          color: 'var(--color-body)',
+                          padding: '6px 0 6px 20px',
+                          position: 'relative',
+                          lineHeight: 1.5,
+                        }}>
+                          <span style={{
+                            position: 'absolute',
+                            left: 0,
+                            top: '14px',
+                            width: '10px',
+                            height: '1px',
+                            background: 'var(--color-accent)',
+                            display: 'inline-block',
+                          }} aria-hidden="true" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
 
                   <Link
                     to="/services"

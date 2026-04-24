@@ -5,6 +5,7 @@ import AdminLogin      from './pages/AdminLogin'
 import AdminDashboard  from './pages/AdminDashboard'
 import AdminInquiries  from './pages/AdminInquiries'
 import AdminTeam       from './pages/AdminTeam'
+import AdminServices   from './pages/AdminServices'
 import AdminSettings   from './pages/AdminSettings'
 
 export default function AdminApp() {
@@ -16,6 +17,7 @@ export default function AdminApp() {
           <Route index           element={<AdminDashboard />} />
           <Route path="inquiries" element={<AdminInquiries />} />
           <Route path="team"      element={<AdminTeam />} />
+          <Route path="services"  element={<AdminServices />} />
           <Route path="settings"  element={<AdminSettings />} />
         </Route>
       </Routes>

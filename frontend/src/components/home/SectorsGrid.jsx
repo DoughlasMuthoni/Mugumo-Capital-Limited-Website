@@ -2,7 +2,7 @@ import Reveal from '../common/Reveal'
 import SectionIntro from '../common/SectionIntro'
 import { useLang } from '../../context/LanguageContext'
 
-import imgHousing from '../../assets/images/sector-housing.jpg'
+import imgHousing from '../../assets/images/apartments.jpg'
 import imgSolar from '../../assets/images/sector-solar.jpg'
 import imgWind from '../../assets/images/sector-wind.jpg'
 import imgGeothermal from '../../assets/images/sector-geothermal.jpg'

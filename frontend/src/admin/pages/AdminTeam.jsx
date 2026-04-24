@@ -14,10 +14,13 @@ export default function AdminTeam() {
   const [toDelete, setToDelete] = useState(null)
   const [error,    setError]    = useState('')
 
+  const [loadError, setLoadError] = useState('')
+
   const load = () => {
+    setLoadError('')
     adminApi.listTeam()
       .then(d => setMembers(d.items || []))
-      .catch(console.error)
+      .catch(err => setLoadError(err.message || 'Failed to load team members.'))
       .finally(() => setLoading(false))
   }
   useEffect(load, [])
@@ -102,6 +105,12 @@ export default function AdminTeam() {
           <i className="bi bi-plus-lg" /> Add Member
         </button>
       </div>
+
+      {loadError && (
+        <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#DC2626', padding: '12px 16px', borderRadius: '6px', fontSize: '0.875rem', marginBottom: '20px' }}>
+          <strong>API Error:</strong> {loadError}
+        </div>
+      )}
 
       {loading ? (
         <p style={{ color: '#9CA3AF' }}>Loading…</p>

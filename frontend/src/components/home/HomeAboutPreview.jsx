@@ -1,6 +1,6 @@
 import Reveal from '../common/Reveal'
 import Button from '../common/Button'
-import aboutImg from '../../assets/images/about-meeting.jpg'
+import aboutImg from '../../assets/images/nairobi-city.jpeg'
 import { useLang } from '../../context/LanguageContext'
 
 const icons = ['bi-graph-up-arrow', 'bi-building', 'bi-bank']

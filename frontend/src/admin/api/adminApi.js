@@ -45,6 +45,13 @@ export const adminApi = {
     request(`/admin/team/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteTeam: (id) => request(`/admin/team/${id}`, { method: 'DELETE' }),
 
+  listServices:   () => request('/admin/services'),
+  createService:  (data) =>
+    request('/admin/services', { method: 'POST', body: JSON.stringify(data) }),
+  updateService:  (id, data) =>
+    request(`/admin/services/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteService:  (id) => request(`/admin/services/${id}`, { method: 'DELETE' }),
+
   getSettings:    () => request('/admin/settings'),
   updateSettings: (data) =>
     request('/admin/settings', { method: 'PUT', body: JSON.stringify(data) }),

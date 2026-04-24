@@ -2,6 +2,19 @@
 
 declare(strict_types=1);
 
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
+error_reporting(0);
+
+set_exception_handler(function (\Throwable $e): void {
+    if (!headers_sent()) {
+        http_response_code(500);
+        header('Content-Type: application/json; charset=utf-8');
+    }
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    exit;
+});
+
 require_once __DIR__ . '/../config/app.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../helpers/response.php';
@@ -92,6 +105,17 @@ if ($isAdmin) {
                 else jsonError('Method not allowed.', 405);
             }
 
+        } elseif ($resource === 'services') {
+            if ($id !== null) {
+                if ($method === 'PUT')        AdminController::updateService($id);
+                elseif ($method === 'DELETE') AdminController::deleteService($id);
+                else jsonError('Method not allowed.', 405);
+            } else {
+                if ($method === 'GET')       AdminController::listServices();
+                elseif ($method === 'POST')  AdminController::createService();
+                else jsonError('Method not allowed.', 405);
+            }
+
         } elseif ($resource === 'settings') {
             if ($method === 'GET')     AdminController::getSettings();
             elseif ($method === 'PUT') AdminController::updateSettings();
@@ -116,6 +140,11 @@ switch ($path) {
 
     case '/team':
         if ($method === 'GET') PublicController::team();
+        else jsonError('Method not allowed.', 405);
+        break;
+
+    case '/services':
+        if ($method === 'GET') PublicController::services();
         else jsonError('Method not allowed.', 405);
         break;
 

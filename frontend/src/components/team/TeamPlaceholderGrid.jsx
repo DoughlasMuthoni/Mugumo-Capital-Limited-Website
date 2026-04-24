@@ -6,6 +6,41 @@ import { useSiteData } from '../../context/SiteDataContext'
 
 const PLACEHOLDER_COUNT = 3
 
+function getInitials(name) {
+  const parts = (name || '').trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return '?'
+  if (parts.length === 1) return parts[0][0].toUpperCase()
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+}
+
+function AvatarPlaceholder({ name, size = 96 }) {
+  const initials = getInitials(name)
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: '50%',
+      background: 'linear-gradient(135deg, var(--color-navy) 0%, #1a4a63 100%)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      flexShrink: 0, position: 'relative', overflow: 'hidden',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'radial-gradient(circle at 30% 30%, rgba(232,117,26,0.18), transparent 65%)',
+      }} aria-hidden="true" />
+      <span style={{
+        fontSize: size * 0.33,
+        fontWeight: 700,
+        color: '#fff',
+        letterSpacing: '0.04em',
+        lineHeight: 1,
+        fontFamily: 'var(--font-heading)',
+        position: 'relative', zIndex: 1,
+      }}>
+        {initials}
+      </span>
+    </div>
+  )
+}
+
 function MemberCard({ member, i }) {
   const { settings } = useSiteData()
   const email = settings.contact_email || 'info@mugumocapital.com'
@@ -19,8 +54,6 @@ function MemberCard({ member, i }) {
               width: '96px', height: '96px', borderRadius: '50%',
               overflow: 'hidden', margin: '0 auto 1.5rem',
               border: '3px solid var(--color-ivory-muted)',
-              background: 'var(--color-ivory-muted)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
           >
             {member.photo_url ? (
@@ -30,7 +63,7 @@ function MemberCard({ member, i }) {
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             ) : (
-              <i className="bi bi-person" style={{ fontSize: '2.5rem', color: 'var(--color-muted)', opacity: 0.5 }} />
+              <AvatarPlaceholder name={member.name} size={96} />
             )}
           </div>
 
@@ -79,17 +112,14 @@ function PlaceholderCard({ i }) {
     <div className="col-lg-4 col-md-6">
       <Reveal delay={i + 1}>
         <div className="mugumo-card text-center h-100">
-          <div
-            style={{
-              width: '96px', height: '96px', borderRadius: '50%',
+          <div style={{ margin: '0 auto 1.5rem', width: '96px', height: '96px', borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--color-ivory-muted)' }} aria-hidden="true">
+            <div style={{
+              width: '100%', height: '100%', borderRadius: '50%',
               background: 'var(--color-ivory-muted)',
-              border: '3px solid var(--color-ivory-muted)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              margin: '0 auto 1.5rem',
-            }}
-            aria-hidden="true"
-          >
-            <i className="bi bi-person" style={{ fontSize: '2.5rem', color: 'var(--color-muted)', opacity: 0.5 }} />
+            }}>
+              <i className="bi bi-person" style={{ fontSize: '2.5rem', color: 'var(--color-muted)', opacity: 0.4 }} />
+            </div>
           </div>
           <p className="heading-serif mb-1" style={{ fontSize: '1rem', color: 'var(--color-navy)', fontStyle: 'italic' }}>
             Profile available on request
