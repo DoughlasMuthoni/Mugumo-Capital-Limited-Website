@@ -386,10 +386,15 @@ class AdminController
         }
 
         $pdo  = getDbConnection();
-        $stmt = $pdo->prepare('UPDATE site_settings SET setting_value = ? WHERE setting_key = ?');
+        $stmt = $pdo->prepare(
+            'INSERT INTO site_settings (setting_key, setting_label, setting_value)
+             VALUES (?, ?, ?)
+             ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)'
+        );
 
         foreach ($data as $key => $value) {
-            $stmt->execute([trim((string)$value), $key]);
+            $label = ucwords(str_replace(['_', '-'], ' ', (string)$key));
+            $stmt->execute([(string)$key, $label, trim((string)$value)]);
         }
         jsonSuccess(['message' => 'Settings saved.']);
     }

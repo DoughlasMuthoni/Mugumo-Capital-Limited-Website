@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { adminApi } from '../api/adminApi'
 
+// Only show contact/social settings here; homepage content is managed in AdminHomepage
+const CONTACT_KEYS = ['contact_email', 'office_address', 'office_phone', 'whatsapp_number', 'linkedin_url']
+
 export default function AdminSettings() {
   const [settings, setSettings] = useState({})
   const [values,   setValues]   = useState({})
@@ -12,9 +15,12 @@ export default function AdminSettings() {
   useEffect(() => {
     adminApi.getSettings()
       .then(d => {
-        setSettings(d.settings || {})
+        const all = d.settings || {}
+        const filtered = {}
+        CONTACT_KEYS.forEach(k => { if (all[k]) filtered[k] = all[k] })
+        setSettings(filtered)
         const vals = {}
-        Object.entries(d.settings || {}).forEach(([k, v]) => { vals[k] = v.value || '' })
+        Object.entries(filtered).forEach(([k, v]) => { vals[k] = v.value || '' })
         setValues(vals)
       })
       .catch(console.error)

@@ -50,7 +50,18 @@ class PublicController
     /** Public site settings — only a safe subset of keys */
     public static function siteSettings(): void
     {
-        $allowed = ['contact_email', 'office_address', 'office_phone', 'whatsapp_number', 'linkedin_url'];
+        $allowed = [
+            'contact_email', 'office_address', 'office_phone', 'whatsapp_number', 'linkedin_url',
+            'about_label', 'about_heading', 'about_p1', 'about_p2', 'about_cta', 'about_hq', 'about_nairobi',
+            'about_pillar_1', 'about_pillar_2', 'about_pillar_3',
+            'about_pillars',
+            'why_label', 'why_heading', 'why_body',
+            'why_item_1_title', 'why_item_1_body',
+            'why_item_2_title', 'why_item_2_body',
+            'why_item_3_title', 'why_item_3_body',
+            'why_item_4_title', 'why_item_4_body',
+            'why_items',
+        ];
         $pdo     = getDbConnection();
 
         $rows = $pdo->query(

@@ -1,12 +1,48 @@
 import Reveal from '../common/Reveal'
 import SectionIntro from '../common/SectionIntro'
 import { useLang } from '../../context/LanguageContext'
+import { useSiteData } from '../../context/SiteDataContext'
 
-const icons = ['bi-pin-map-fill', 'bi-diagram-3-fill', 'bi-layers-fill', 'bi-trophy-fill']
+// Cycles when there are more cards than icons
+const FALLBACK_ICONS = [
+  'bi-pin-map-fill', 'bi-diagram-3-fill', 'bi-layers-fill', 'bi-trophy-fill',
+  'bi-shield-check-fill', 'bi-briefcase-fill', 'bi-bar-chart-fill', 'bi-globe',
+]
+
+function resolveItems(settings, defaults) {
+  // Prefer new JSON key (set by dynamic admin)
+  if (settings.why_items) {
+    try {
+      const p = JSON.parse(settings.why_items)
+      if (Array.isArray(p) && p.length) {
+        return p.map((it, i) => ({
+          icon:  it.icon  || FALLBACK_ICONS[i % FALLBACK_ICONS.length],
+          title: it.title || '',
+          body:  it.body  || '',
+        }))
+      }
+    } catch (_) {}
+  }
+  // Fall back to individual keys (old format)
+  return defaults.map((def, i) => ({
+    icon:  FALLBACK_ICONS[i % FALLBACK_ICONS.length],
+    title: settings[`why_item_${i + 1}_title`] || def.title,
+    body:  settings[`why_item_${i + 1}_body`]  || def.body,
+  }))
+}
 
 export default function WhyMugumo() {
   const { t } = useLang()
+  const { settings } = useSiteData()
   const w = t.why
+
+  const label   = settings.why_label   || w.label
+  const heading = settings.why_heading || w.heading
+  const body    = settings.why_body    || w.body
+  const items   = resolveItems(settings, w.items)
+
+  // Responsive column class: 4 per row up to 4 items, 3 per row for 5+
+  const colClass = items.length > 4 ? 'col-xl-3 col-lg-4 col-md-6' : 'col-lg-3 col-md-6'
 
   return (
     <section className="section-py" style={{ background: 'var(--color-ivory-muted)', position: 'relative', overflow: 'hidden' }}>
@@ -19,12 +55,12 @@ export default function WhyMugumo() {
 
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
         <Reveal>
-          <SectionIntro label={w.label} title={w.heading} body={w.body} centered />
+          <SectionIntro label={label} title={heading} body={body} centered />
         </Reveal>
 
         <div className="row g-4 mt-3">
-          {w.items.map(({ title, body }, i) => (
-            <div key={i} className="col-lg-3 col-md-6">
+          {items.map(({ icon, title, body: itemBody }, i) => (
+            <div key={i} className={colClass}>
               <Reveal delay={i + 1}>
                 <div className="why-card">
                   <div style={{
@@ -33,7 +69,7 @@ export default function WhyMugumo() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     marginBottom: '24px', position: 'relative',
                   }}>
-                    <i className={`bi ${icons[i]}`} style={{ fontSize: '1.4rem', color: 'var(--color-accent)' }} />
+                    <i className={`bi ${icon}`} style={{ fontSize: '1.4rem', color: 'var(--color-accent)' }} />
                     <div style={{
                       position: 'absolute', bottom: '-4px', right: '-4px',
                       width: '10px', height: '10px', background: 'var(--color-accent)',
@@ -43,7 +79,7 @@ export default function WhyMugumo() {
                     {title}
                   </h3>
                   <p style={{ fontSize: '0.875rem', color: 'var(--color-muted)', lineHeight: 1.75, margin: 0 }}>
-                    {body}
+                    {itemBody}
                   </p>
                   <div className="why-card-line" style={{ height: '2px', background: 'var(--color-accent)', width: '0', marginTop: '24px', transition: 'width 0.4s ease' }} aria-hidden="true" />
                 </div>
